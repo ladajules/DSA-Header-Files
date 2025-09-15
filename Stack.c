@@ -9,50 +9,30 @@ void initStack (STACK *S) {
     S->top = NULL;
 }
 
-bool stackIsEmpty(STACK S) {
-    return S.arr.top == -1 && S.top == NULL;
+Studtype stackPeekArray(arrSTACK S) {
+    return S.stud[S.top];
+    // printf("%-15s%-15s%-5c%-10d%-10s\n", 
+    //     S.arr.stud[S.arr.top].name.LName, 
+    //     S.arr.stud[S.arr.top].name.FName,
+    //     S.arr.stud[S.arr.top].name.Mi,
+    //     S.arr.stud[S.arr.top].YrLvl,
+    //     S.arr.stud[S.arr.top].Course);
 }
 
-bool stackIsFull(STACK S) {
-    return S.arr.top == STACKMAX - 1;
-}
-
-void stackPeekArray(STACK S) {
-    printf("%-15s%-15s%-5c%-10d%-10s\n", 
-        S.arr.stud[S.arr.top].name.LName, 
-        S.arr.stud[S.arr.top].name.FName,
-        S.arr.stud[S.arr.top].name.Mi,
-        S.arr.stud[S.arr.top].YrLvl,
-        S.arr.stud[S.arr.top].Course);
-}
-
-void stackPeekList(STACK S) {
-    printf("%-15s%-15s%-5c%-10d%-10s\n", 
-        S.top->data.name.LName, 
-        S.top->data.name.FName,
-        S.top->data.name.Mi,
-        S.top->data.YrLvl,
-        S.top->data.Course);
+Studtype stackPeekList(llSTACK *S) {
+    return S->data;
+    // printf("%-15s%-15s%-5c%-10d%-10s\n", 
+    //     S.top->data.name.LName, 
+    //     S.top->data.name.FName,
+    //     S.top->data.name.Mi,
+    //     S.top->data.YrLvl,
+    //     S.top->data.Course);
 }
 
 bool cmp(Studtype a, Studtype b) {
     return strcmp(a.name.LName, b.name.LName) == 0 &&
         strcmp(a.name.FName, b.name.FName) == 0 &&
         a.name.Mi == b.name.Mi;
-}
-
-bool stackIsUnique(STACK S, Studtype data) {
-    bool flag = true;
-    STACK t = S; 
-    while (!stackIsEmpty(t) && flag == true) {
-        if (cmp(t.arr.stud[t.arr.top], data) || cmp(t.top->data, data)) {
-            flag = false;
-        }
-        popArr(&t); //t.arr.top--;
-        popLL(&t); //t.top = t.top->next;
-    }
-
-    return flag;
 }
 
 void pushArr(STACK *S, Studtype data) { // new
@@ -89,8 +69,54 @@ void popLL(STACK *S) { // new
     }
 }
 
+bool stackIsUnique(STACK S, Studtype data) {
+    STACK tempStack;
+    initStack(&tempStack);
+    bool isUnique = true;
+    Studtype tempData;
+    
+    // array
+    while (S.arr.top != -1 && isUnique) {
+        tempData = stackPeekArray(S.arr);
+        if (cmp(tempData, data)) {
+            isUnique = false;
+        }
+        pushArr(&tempStack, tempData);
+        popArr(&S);
+    }
+    
+    while (tempStack.arr.top != -1) {
+        Studtype giveDataBak = stackPeekArray(tempStack.arr);
+        pushArr(&S, giveDataBak);
+        popArr(&tempStack);
+    }
+    
+    // linked list
+    llSTACK *tempHead = NULL;
+    while (S.top != NULL && isUnique) {
+        tempData = stackPeekList(S.top);
+        if (cmp(tempData, data)) {
+            isUnique = false;
+        }
+        llSTACK *newNode = malloc(sizeof(llSTACK));
+        newNode->data = tempData;
+        newNode->next = tempHead;
+        tempHead = newNode;
+        popLL(&S);
+    }
+    
+    while (tempHead != NULL) {
+        pushLL(&S, tempHead->data);
+        llSTACK *del = tempHead;
+        tempHead = tempHead->next;
+        free(del);
+    }
+
+    return isUnique;
+}
+
 void popUnique(STACK *S, Studtype data) {
-    if (stackIsEmpty(*S)) {
+    if (S->arr.top == -1 && S->top == NULL) {
         printf("Stack is empty.\n");
     } else {
         // array
@@ -99,7 +125,7 @@ void popUnique(STACK *S, Studtype data) {
         bool flag = false;
         
         while (S->arr.top != -1 && !flag) {
-            Studtype tempData =  S->arr.stud[S->arr.top]; // top of stack 
+            Studtype tempData =  stackPeekArray(S->arr); // top of stack 
             
             if (cmp(tempData, data)) {
                 flag = true;
@@ -112,7 +138,8 @@ void popUnique(STACK *S, Studtype data) {
         }
         
         while (tempStack.arr.top != -1) {
-            pushArr(S, tempStack.arr.stud[tempStack.arr.top]);
+            Studtype giveBak = stackPeekArray(tempStack.arr);
+            pushArr(S, giveBak);
             // S->arr.top++;
             // S->arr.stud[S->arr.top] = tempStack.arr.stud[tempStack.arr.top];
             popArr(&tempStack); // tempStack.arr.top--;
@@ -140,15 +167,16 @@ void popUnique(STACK *S, Studtype data) {
                 curr = curr->next;
             }
         }
-        printf("Deleted.\n");
+        printf("Popped.\n");
     }
 }
 
 void pushUnique(STACK *S, Studtype data) {
-    if (stackIsFull(*S)) {
+    if (S->arr.top == STACKMAX - 1) {
         printf("Stack is full.\n");
     } else {
-        if (stackIsUnique(*S, data)) {
+        STACK temp = *S;
+        if (stackIsUnique(temp, data)) {
             //array
             pushArr(S, data);
             // S->arr.top++;
@@ -161,7 +189,7 @@ void pushUnique(STACK *S, Studtype data) {
             // newNode->next = S->top;
             // S->top = newNode;
 
-            printf("Added.\n");
+            printf("Pushed.\n");
         } else {
             printf("Data is already in the stack.\n");
         }
@@ -169,23 +197,58 @@ void pushUnique(STACK *S, Studtype data) {
 }
 
 void displayStack(STACK S) {
-    if (stackIsEmpty(S)) {
+    if (S.arr.top == -1 && S.top == NULL) {
         printf("Stack is empty.\n");
     } else {
         printf("\n=== Array Stack ===\n");
-        STACK t = S;
         printf("%-15s%-15s%-5s%-10s%-10s\n", "Last Name", "First Name", "Mi", "Yr Lvl", "Course");
-        while (!stackIsEmpty(t)) {
-            stackPeekArray(t);
-            popArr(&t); //.arr.top--; 
+        STACK tempStack;
+        initStack(&tempStack);
+        Studtype data;
+        
+        while (S.arr.top != -1) {
+            data = stackPeekArray(S.arr);
+            printf("%-15s%-15s%-5c%-10d%-10s\n", 
+                data.name.LName, 
+                data.name.FName,
+                data.name.Mi,
+                data.YrLvl,
+                data.Course);
+            pushArr(&tempStack, data);
+            popArr(&S); //.arr.top--; 
+        }
+        
+        while (tempStack.arr.top != -1) {
+            Studtype givData = stackPeekArray(tempStack.arr);
+            pushArr(&S, givData);
+            popArr(&tempStack);
         }
 
         printf("\n=== Linked-list Stack ===\n");
-        STACK t2 = S;
         printf("%-15s%-15s%-5s%-10s%-10s\n", "Last Name", "First Name", "Mi", "Yr Lvl", "Course");
-        while (!stackIsEmpty(t2)) {
-            stackPeekList(t2);
-            t2.top = t2.top->next;  // popLL(&t2); // t2.top = t2.top->next; 
+        llSTACK *tempHead = NULL;
+        
+        while (S.top != NULL) {
+            data = stackPeekList(S.top);
+            printf("%-15s%-15s%-5c%-10d%-10s\n", 
+                data.name.LName, 
+                data.name.FName,
+                data.name.Mi,
+                data.YrLvl,
+                data.Course);
+            llSTACK *newNode = malloc(sizeof(llSTACK));
+            newNode->data = data;
+            newNode->next = tempHead;
+            tempHead = newNode; 
+            popLL(&S); // popLL(&t2); // t2.top = t2.top->next; 
+        }
+        
+        while (tempHead != NULL) {
+            pushLL(&S, tempHead->data);
+            llSTACK *del = tempHead;
+            tempHead = tempHead->next;
+            free(del);
         }
     }
+    printf("\n");
 }

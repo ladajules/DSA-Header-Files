@@ -1,6 +1,7 @@
 #ifndef STACK_H
 #define STACK_H
 #include "Studtype.h"
+#include <stdbool.h>
 
 #define STACKMAX 10
 
@@ -23,12 +24,9 @@ void initStack(STACK *S);
 void popUnique(STACK *S, Studtype data);
 void pushUnique(STACK *S, Studtype data);
 void displayStack(STACK S);
-bool stackIsEmpty(STACK S);
-bool stackIsFull(STACK S);
-void stackPeekArray(STACK S);
-void stackPeekList(STACK S);
+Studtype stackPeekArray(arrSTACK S);
+Studtype stackPeekList(llSTACK *S);
 bool stackIsUnique(STACK S, Studtype data);
-bool cmp(Studtype a, Studtype b);
 void pushArr(STACK *S, Studtype data);
 void pushLL(STACK *S, Studtype data);
 void popArr(STACK *S);

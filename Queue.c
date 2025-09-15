@@ -9,71 +9,56 @@ void initQueue(Queue *Q) {
     Q->front = Q->rear = NULL;
 }
 
-bool queueIsEmpty(Queue Q) {
-    return (Q.arr.front == -1 && Q.arr.rear == -1) && (Q.front == NULL);
+Studtype queueFrontArray(arrQUEUE Q) { 
+        return Q.data[Q.front];
+        // printf("%-15s%-15s%-5c%-10d%-10s\n",
+        //     Q.arr.data[Q.arr.front].name.LName,
+        //     Q.arr.data[Q.arr.front].name.FName,
+        //     Q.arr.data[Q.arr.front].name.Mi,
+        //     Q.arr.data[Q.arr.front].YrLvl,
+        //     Q.arr.data[Q.arr.front].Course
 }
 
-bool queueIsFull(Queue Q) {
-    return ((Q.arr.rear + 2) % QUEUEMAX == Q.arr.front);
-}
-
-
-void queueFrontArray(Queue Q) { 
-    if (Q.arr.front == -1) {
-        printf("Queue is empty.\n");
-    } else {
-        printf("%-15s%-15s%-5c%-10d%-10s\n",
-            Q.arr.data[Q.arr.front].name.LName,
-            Q.arr.data[Q.arr.front].name.FName,
-            Q.arr.data[Q.arr.front].name.Mi,
-            Q.arr.data[Q.arr.front].YrLvl,
-            Q.arr.data[Q.arr.front].Course
-        );
-    }
-}
-
-void queueFrontList(Queue Q) {
-    if (Q.front == NULL) {
-        printf("Queue is empty.\n");
-    } else {
-        printf("%-15s%-15s%-5c%-10d%-10s\n",
-            Q.front->data.name.LName,
-            Q.front->data.name.FName,
-            Q.front->data.name.Mi,
-            Q.front->data.YrLvl,
-            Q.front->data.Course
-        );
-    }
+Studtype queueFrontList(llQUEUE Q) {
+    return Q.data;
+        // printf("%-15s%-15s%-5c%-10d%-10s\n",
+        //     Q.front->data.name.LName,
+        //     Q.front->data.name.FName,
+        //     Q.front->data.name.Mi,
+        //     Q.front->data.YrLvl,
+        //     Q.front->data.Course
 }
 
 bool queueIsUnique(Queue Q, Studtype data) {
-    bool flag = true;
+    bool iFoundYou = true;
     
-    Queue t = Q;
-    while (t.arr.front != -1 && flag) {
-        if (cmp(t.arr.data[t.arr.front], data)) {
-            flag = false;
-        } else {
-            dequeueArr(&t);
-            // if (t.arr.front == t.arr.rear) {
-            //     t.arr.front = t.arr.rear = -1;
-            // } else {
-            //     t.arr.front = (t.arr.front + 1) % QUEUEMAX;
-            // }
+    Queue tempQueue;
+    initQueue(&tempQueue);
+    
+    while (Q.arr.front != -1 && iFoundYou) {
+        Studtype tempData = queueFrontArray(Q.arr);
+        if (cmp(tempData, data)) {
+            iFoundYou = false;
         }
+        enqueueArr(&tempQueue, tempData);
+        dequeueArr(&Q);
     }
     
-    bool iFoundYouBroo = true;
-    llQUEUE *temp = Q.front;
-    while (temp != NULL && iFoundYouBroo) {
-        if (cmp(temp->data, data)) {
-            iFoundYouBroo = false;
-        } else {
-            temp = temp->next;
-        }
+    while (tempQueue.arr.front != -1) {
+        Studtype give = queueFrontArray(tempQueue.arr);
+        enqueueArr(&Q, give);
+        dequeueArr(&tempQueue);
     }
-
-    return flag && iFoundYouBroo;
+    
+    llQUEUE *tempHead = Q.front;
+    while (tempHead != NULL && iFoundYou) {
+        if (cmp(tempHead->data, data)) {
+            iFoundYou = false;
+        }
+        tempHead = tempHead->next;
+    }
+    
+    return iFoundYou;
 }
 
 void enqueueArr(Queue *Q, Studtype data) {
@@ -107,19 +92,22 @@ void dequeueArr(Queue *Q) {
 }
 
 void dequeueLL(Queue *Q) {
+    llQUEUE *temp = Q->front;
     if (Q->front == Q->rear) {
         Q->front = Q->rear = NULL;
     } else {
         Q->front = Q->front->next;
     }
+    free(temp);
 }
 
 
 void enqueueUnique(Queue *Q, Studtype data) {
-    if (queueIsFull(*Q)) {
+    if (((Q->arr.rear + 1) % QUEUEMAX) == Q->arr.front) {
         printf("Queue is full.\n");
     } else {
-        if (queueIsUnique(*Q, data)) {
+        Queue tempQueue = *Q;
+        if (queueIsUnique(tempQueue, data)) {
             enqueueArr(Q, data);
             enqueueLL(Q, data);
             // if (Q->arr.front == -1) {
@@ -140,7 +128,7 @@ void enqueueUnique(Queue *Q, Studtype data) {
             //     Q->rear = newNode;
             // }
             
-            printf("Added.\n");
+            printf("Queued.\n");
         } else {
             printf("Data is already in queue.\n");
         }
@@ -148,7 +136,7 @@ void enqueueUnique(Queue *Q, Studtype data) {
 }
 
 void dequeueUnique(Queue *Q, Studtype data) {
-    if (queueIsEmpty(*Q)) {
+    if ((Q->arr.front == -1) && Q->front == NULL) {
         printf("Queue is empty.\n");
     } else {
         // Array
@@ -157,8 +145,7 @@ void dequeueUnique(Queue *Q, Studtype data) {
         bool flag = false;
         
         while (Q->arr.front != -1) {
-            Studtype tempData = Q->arr.data[Q->arr.front];
-            
+            Studtype tempData = queueFrontArray(Q->arr);
             dequeueArr(Q);
             // if (Q->arr.rear == Q->arr.front) {
             //     Q->arr.front = Q->arr.rear = -1;
@@ -166,17 +153,24 @@ void dequeueUnique(Queue *Q, Studtype data) {
             //     Q->arr.front = (Q->arr.front + 1) % QUEUEMAX;
             // }
             
-            if (!cmp(tempData, data)) {
-                enqueueArr(Q, data);
+            if (cmp(tempData, data)) {
+                flag = true;
                 // if (tempQueue.arr.front == -1) {
                 //     tempQueue.arr.front = tempQueue.arr.rear = 0;
                 // } else {
                 //     tempQueue.arr.rear = (tempQueue.arr.rear + 1) % QUEUEMAX;
                 // }
                 // tempQueue.arr.data[tempQueue.arr.rear] = tempData;
-            } 
+            }  else {
+                enqueueArr(&tempQueue, tempData);
+            }
         }
-        Q->arr = tempQueue.arr;
+        
+        while (tempQueue.arr.front != -1) {
+            Studtype givMyData = queueFrontArray(tempQueue.arr);
+            enqueueArr(Q, givMyData);
+            dequeueArr(&tempQueue);
+        }
         
         // Linked list
         llQUEUE *temp = Q->front, *prev = NULL;
@@ -202,7 +196,7 @@ void dequeueUnique(Queue *Q, Studtype data) {
             }
         }
         
-        printf("Deleted.\n");
+        printf("Dequeued.\n");
     }
 }
 
@@ -211,26 +205,44 @@ void displayQueue(Queue Q) {
         printf("Queue is empty.\n");
     } else {
         printf("\n=== Array Queue ===\n");
-        Queue t = Q;
         printf("%-15s%-15s%-5s%-10s%-10s\n", "Last Name", "First Name", "Mi", "Yr Lvl", "Course");
-        while (t.arr.front != -1) {
-            queueFrontArray(t);
-            
-            dequeueArr(&t);
+        Queue tempQueue;
+        initQueue(&tempQueue);
+        Studtype data;
+        
+        while (Q.arr.front != -1) {
+            data = queueFrontArray(Q.arr);
+            printf("%-15s%-15s%-5c%-10d%-10s\n", 
+                    data.name.LName, 
+                    data.name.FName,
+                    data.name.Mi,
+                    data.YrLvl,
+                    data.Course);
+            enqueueArr(&tempQueue, data);
+            dequeueArr(&Q);
             // if (t.arr.front == t.arr.rear) {
             //     t.arr.front = t.arr.rear = -1;
             // } else {
             //     t.arr.front = (t.arr.front + 1) % QUEUEMAX;
             // } // dequeueUnique(&t, t.arr.data[t.arr.front]);
         }
+        
+        while (tempQueue.arr.front != -1) {
+            Studtype give = queueFrontArray(tempQueue.arr);
+            enqueueArr(&Q, give);
+            dequeueArr(&tempQueue);
+        }
 
         printf("\n=== Linked-list Queue ===\n");
         llQUEUE *temp = Q.front;
         printf("%-15s%-15s%-5s%-10s%-10s\n", "Last Name", "First Name", "Mi", "Yr Lvl", "Course");
         while (temp != NULL) {
-            Queue t2 = Q;
-            t2.front = temp;
-            queueFrontList(t2);
+            printf("%-15s%-15s%-5c%-10d%-10s\n", 
+                    temp->data.name.LName, 
+                    temp->data.name.FName,
+                    temp->data.name.Mi,
+                    temp->data.YrLvl,
+                    temp->data.Course);
             temp = temp->next;
         }
     }
