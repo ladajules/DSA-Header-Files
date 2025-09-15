@@ -10,7 +10,7 @@ void initStack (STACK *S) {
 }
 
 bool stackIsEmpty(STACK S) {
-    return S.arr.top == -1 || S.top == NULL;
+    return S.arr.top == -1 && S.top == NULL;
 }
 
 bool stackIsFull(STACK S) {
@@ -45,11 +45,11 @@ bool stackIsUnique(STACK S, Studtype data) {
     bool flag = true;
     STACK t = S; 
     while (!stackIsEmpty(t) && flag == true) {
-        if (cmp(t.arr.stud[t.arr.top], data) && cmp(t.top->data, data)) {
+        if (cmp(t.arr.stud[t.arr.top], data) || cmp(t.top->data, data)) {
             flag = false;
         }
-        t.arr.top--;
-        t.top = t.top->next;
+        popArr(&t); //t.arr.top--;
+        popLL(&t); //t.top = t.top->next;
     }
 
     return flag;
@@ -140,6 +140,7 @@ void popUnique(STACK *S, Studtype data) {
                 curr = curr->next;
             }
         }
+        printf("Deleted.\n");
     }
 }
 
@@ -184,7 +185,7 @@ void displayStack(STACK S) {
         printf("%-15s%-15s%-5s%-10s%-10s\n", "Last Name", "First Name", "Mi", "Yr Lvl", "Course");
         while (!stackIsEmpty(t2)) {
             stackPeekList(t2);
-            popLL(&t2); // t2.top = t2.top->next; 
+            t2.top = t2.top->next;  // popLL(&t2); // t2.top = t2.top->next; 
         }
     }
 }
