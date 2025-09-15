@@ -54,11 +54,12 @@ bool queueIsUnique(Queue Q, Studtype data) {
         if (cmp(t.arr.data[t.arr.front], data)) {
             flag = false;
         } else {
-            if (t.arr.front == t.arr.rear) {
-                t.arr.front = t.arr.rear = -1;
-            } else {
-                t.arr.front = (t.arr.front + 1) % QUEUEMAX;
-            }
+            dequeueArr(&t);
+            // if (t.arr.front == t.arr.rear) {
+            //     t.arr.front = t.arr.rear = -1;
+            // } else {
+            //     t.arr.front = (t.arr.front + 1) % QUEUEMAX;
+            // }
         }
     }
     
@@ -75,29 +76,69 @@ bool queueIsUnique(Queue Q, Studtype data) {
     return flag && iFoundYouBroo;
 }
 
+void enqueueArr(Queue *Q, Studtype data) {
+    if (Q->arr.front == -1) {
+        Q->arr.front = Q->arr.rear = 0;
+    } else {
+        Q->arr.rear = (Q->arr.rear + 1) % QUEUEMAX;
+    } 
+    Q->arr.data[Q->arr.rear] = data;
+}
+
+void enqueueLL(Queue *Q, Studtype data) {
+    llQUEUE *newNode = malloc(sizeof(llQUEUE));
+    newNode->data = data;
+    newNode->next = NULL;
+
+    if (Q->front == NULL) {
+        Q->front = Q->rear = newNode;
+    } else {
+        Q->rear->next = newNode;
+        Q->rear = newNode;
+    }
+}
+
+void dequeueArr(Queue *Q) {
+    if (Q->arr.front == Q->arr.rear) {
+        Q->arr.front = Q->arr.rear = -1;
+    } else {
+        Q->arr.front = (Q->arr.front + 1) % QUEUEMAX;
+    }
+}
+
+void dequeueLL(Queue *Q) {
+    if (Q->front == Q->rear) {
+        Q->front = Q->rear = NULL;
+    } else {
+        Q->front = Q->front->next;
+    }
+}
+
 
 void enqueueUnique(Queue *Q, Studtype data) {
     if (queueIsFull(*Q)) {
         printf("Queue is full.\n");
     } else {
         if (queueIsUnique(*Q, data)) {
-            if (Q->arr.front == -1) {
-                Q->arr.front = Q->arr.rear = 0;
-            } else {
-                Q->arr.rear = (Q->arr.rear + 1) % QUEUEMAX;
-            }
-            Q->arr.data[Q->arr.rear] = data;
+            enqueueArr(Q, data);
+            enqueueLL(Q, data);
+            // if (Q->arr.front == -1) {
+            //     Q->arr.front = Q->arr.rear = 0;
+            // } else {
+            //     Q->arr.rear = (Q->arr.rear + 1) % QUEUEMAX;
+            // }
+            // Q->arr.data[Q->arr.rear] = data;
             
-            llQUEUE *newNode = malloc(sizeof(llQUEUE));
-            newNode->data = data;
-            newNode->next = NULL;
+            // llQUEUE *newNode = malloc(sizeof(llQUEUE));
+            // newNode->data = data;
+            // newNode->next = NULL;
             
-            if (Q->front == NULL) {
-                Q->front = Q->rear = newNode;
-            } else {
-                Q->rear->next = newNode;
-                Q->rear = newNode;
-            }
+            // if (Q->front == NULL) {
+            //     Q->front = Q->rear = newNode;
+            // } else {
+            //     Q->rear->next = newNode;
+            //     Q->rear = newNode;
+            // }
             
             printf("Added.\n");
         } else {
@@ -118,19 +159,21 @@ void dequeueUnique(Queue *Q, Studtype data) {
         while (Q->arr.front != -1) {
             Studtype tempData = Q->arr.data[Q->arr.front];
             
-            if (Q->arr.rear == Q->arr.front) {
-                Q->arr.front = Q->arr.rear = -1;
-            } else {
-                Q->arr.front = (Q->arr.front + 1) % QUEUEMAX;
-            }
+            dequeueArr(Q);
+            // if (Q->arr.rear == Q->arr.front) {
+            //     Q->arr.front = Q->arr.rear = -1;
+            // } else {
+            //     Q->arr.front = (Q->arr.front + 1) % QUEUEMAX;
+            // }
             
             if (!cmp(tempData, data)) {
-                if (tempQueue.arr.front == -1) {
-                    tempQueue.arr.front = tempQueue.arr.rear = 0;
-                } else {
-                    tempQueue.arr.rear = (tempQueue.arr.rear + 1) % QUEUEMAX;
-                }
-                tempQueue.arr.data[tempQueue.arr.rear] = tempData;
+                enqueueArr(Q, data);
+                // if (tempQueue.arr.front == -1) {
+                //     tempQueue.arr.front = tempQueue.arr.rear = 0;
+                // } else {
+                //     tempQueue.arr.rear = (tempQueue.arr.rear + 1) % QUEUEMAX;
+                // }
+                // tempQueue.arr.data[tempQueue.arr.rear] = tempData;
             } 
         }
         Q->arr = tempQueue.arr;
@@ -173,11 +216,12 @@ void displayQueue(Queue Q) {
         while (t.arr.front != -1) {
             queueFrontArray(t);
             
-            if (t.arr.front == t.arr.rear) {
-                t.arr.front = t.arr.rear = -1;
-            } else {
-                t.arr.front = (t.arr.front + 1) % QUEUEMAX;
-            } // dequeueUnique(&t, t.arr.data[t.arr.front]);
+            dequeueArr(&t);
+            // if (t.arr.front == t.arr.rear) {
+            //     t.arr.front = t.arr.rear = -1;
+            // } else {
+            //     t.arr.front = (t.arr.front + 1) % QUEUEMAX;
+            // } // dequeueUnique(&t, t.arr.data[t.arr.front]);
         }
 
         printf("\n=== Linked-list Queue ===\n");

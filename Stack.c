@@ -17,7 +17,7 @@ bool stackIsFull(STACK S) {
     return S.arr.top == STACKMAX - 1;
 }
 
-Studtype stackPeekArray(STACK S) {
+void stackPeekArray(STACK S) {
     printf("%-15s%-15s%-5c%-10d%-10s\n", 
         S.arr.stud[S.arr.top].name.LName, 
         S.arr.stud[S.arr.top].name.FName,
@@ -26,7 +26,7 @@ Studtype stackPeekArray(STACK S) {
         S.arr.stud[S.arr.top].Course);
 }
 
-Studtype stackPeekList(STACK S) {
+void stackPeekList(STACK S) {
     printf("%-15s%-15s%-5c%-10d%-10s\n", 
         S.top->data.name.LName, 
         S.top->data.name.FName,
@@ -99,7 +99,7 @@ void popUnique(STACK *S, Studtype data) {
         bool flag = false;
         
         while (S->arr.top != -1 && !flag) {
-            Studtype tempData =  stackPeekArray(*S); // S->arr.stud[S->arr.top];
+            Studtype tempData =  S->arr.stud[S->arr.top]; // top of stack 
             
             if (cmp(tempData, data)) {
                 flag = true;
@@ -175,7 +175,7 @@ void displayStack(STACK S) {
         STACK t = S;
         printf("%-15s%-15s%-5s%-10s%-10s\n", "Last Name", "First Name", "Mi", "Yr Lvl", "Course");
         while (!stackIsEmpty(t)) {
-            printf("%-15s%-15s%-5c%-10d%-10s\n", stackPeekArray(t));
+            stackPeekArray(t);
             popArr(&t); //.arr.top--; 
         }
 
@@ -183,7 +183,7 @@ void displayStack(STACK S) {
         STACK t2 = S;
         printf("%-15s%-15s%-5s%-10s%-10s\n", "Last Name", "First Name", "Mi", "Yr Lvl", "Course");
         while (!stackIsEmpty(t2)) {
-            printf("%-15s%-15s%-5c%-10d%-10s\n", stackPeekList(t2));
+            stackPeekList(t2);
             popLL(&t2); // t2.top = t2.top->next; 
         }
     }
