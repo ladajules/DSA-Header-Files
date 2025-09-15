@@ -31,5 +31,9 @@ bool queueIsFull(Queue Q);
 void queueFrontArray(Queue Q);
 void queueFrontList(Queue Q);
 bool queueIsUnique(Queue Q, Studtype data);
+void enqueueArr(Queue *Q, Studtype data);
+void enqueueLL(Queue *Q, Studtype data);
+void dequeueArr(Queue *Q);
+void dequeueLL(Queue *Q);
 
 #endif

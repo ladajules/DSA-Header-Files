@@ -75,6 +75,7 @@ bool queueIsUnique(Queue Q, Studtype data) {
     return flag && iFoundYouBroo;
 }
 
+
 void enqueueUnique(Queue *Q, Studtype data) {
     if (queueIsFull(*Q)) {
         printf("Queue is full.\n");

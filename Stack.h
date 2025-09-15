@@ -25,9 +25,13 @@ void pushUnique(STACK *S, Studtype data);
 void displayStack(STACK S);
 bool stackIsEmpty(STACK S);
 bool stackIsFull(STACK S);
-void stackPeekArray(STACK S);
-void stackPeekList(STACK S);
+Studtype stackPeekArray(STACK S);
+Studtype stackPeekList(STACK S);
 bool stackIsUnique(STACK S, Studtype data);
 bool cmp(Studtype a, Studtype b);
+void pushArr(STACK *S, Studtype data);
+void pushLL(STACK *S, Studtype data);
+void popArr(STACK *S);
+void popLL(STACK *S);
 
 #endif
