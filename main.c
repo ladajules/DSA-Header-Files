@@ -1,20 +1,17 @@
-//#include <stdio.h>
-#include <stdbool.h>
 #include "Studtype.h"
 #include "Stack.h"
 #include "Queue.h"
 #include "CursorBased.h"
 #include "CBStack.h"
-//#include "CBQueue.h"
+#include "CBQueue.h"
 
 int main() {
     Studtype data = {{"Gimenez", "Jules", 'L'}, 2, "BSIT"};
-    STACK S; Queue Q; VHeap VH; CBStack CBS;
+    STACK S; Queue Q; VHeap SVH; VHeap QVH; CBStack CBS; CBQueue CBQ;
 
     Studtype data1 = {{"Doe", "John", 'T'}, 1, "BSCS"};
     Studtype data2 = {{"Garcia", "Geroge", 'Y'}, 3, "BSCS"};
-    Studtype data3 
-    = {{"Gonazles", "Tri", 'G'}, 4, "BSIS"};
+    Studtype data3 = {{"Gonazles", "Tri", 'G'}, 4, "BSIS"};
     Studtype data4 = {{"Montaromas", "Yu", 'P'}, 2, "BSCS"};
 
     initStack(&S);
@@ -43,19 +40,30 @@ int main() {
     displayQueue(Q);
     
     // CURSOR-BASED
-    initVHeap(&VH);
+    initVHeap(&SVH);
+    initVHeap(&QVH);
     CBinitStack(&CBS);
+    CBinitQueue(&CBQ);
     
-    CBpushUnique(&VH, &CBS, data);
-    CBpushUnique(&VH, &CBS, data1);
-    CBpushUnique(&VH, &CBS, data2);
-    CBpushUnique(&VH, &CBS, data3);
-    CBpushUnique(&VH, &CBS, data4);
+    CBpushUnique(&SVH, &CBS, data);
+    CBpushUnique(&SVH, &CBS, data1);
+    CBpushUnique(&SVH, &CBS, data2);
+    CBpushUnique(&SVH, &CBS, data3);
+    CBpushUnique(&SVH, &CBS, data4);
+    CBenqueueUnique(&QVH, &CBQ, data);
+    CBenqueueUnique(&QVH, &CBQ, data1);
+    CBenqueueUnique(&QVH, &CBQ, data2);
+    CBenqueueUnique(&QVH, &CBQ, data3);
+    CBenqueueUnique(&QVH, &CBQ, data4);
     
-    CBdisplayStack(&VH, &CBS);
+    CBdisplayStack(&SVH, &CBS);
+    CBdisplayQueue(&QVH, &CBQ);
     
-    CBpopUnique(&VH, &CBS, data);
-    CBdisplayStack(&VH, &CBS);
+    CBpopUnique(&SVH, &CBS, data);
+    CBdequeueUnique(&QVH, &CBQ, data);
+    
+    CBdisplayStack(&SVH, &CBS);
+    CBdisplayQueue(&QVH, &CBQ);
 
     return 0;
 }
