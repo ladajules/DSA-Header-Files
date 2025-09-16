@@ -3,6 +3,7 @@
 #include <string.h>
 #include <stdlib.h>
 #include "Queue.h"
+#include "Studtype.h"
 
 void initQueue(Queue *Q) {
     Q->arr.front = Q->arr.rear = -1;
@@ -11,22 +12,10 @@ void initQueue(Queue *Q) {
 
 Studtype queueFrontArray(arrQUEUE Q) { 
         return Q.data[Q.front];
-        // printf("%-15s%-15s%-5c%-10d%-10s\n",
-        //     Q.arr.data[Q.arr.front].name.LName,
-        //     Q.arr.data[Q.arr.front].name.FName,
-        //     Q.arr.data[Q.arr.front].name.Mi,
-        //     Q.arr.data[Q.arr.front].YrLvl,
-        //     Q.arr.data[Q.arr.front].Course
 }
 
 Studtype queueFrontList(llQUEUE Q) {
     return Q.data;
-        // printf("%-15s%-15s%-5c%-10d%-10s\n",
-        //     Q.front->data.name.LName,
-        //     Q.front->data.name.FName,
-        //     Q.front->data.name.Mi,
-        //     Q.front->data.YrLvl,
-        //     Q.front->data.Course
 }
 
 bool queueIsUnique(Queue Q, Studtype data) {
@@ -110,23 +99,6 @@ void enqueueUnique(Queue *Q, Studtype data) {
         if (queueIsUnique(tempQueue, data)) {
             enqueueArr(Q, data);
             enqueueLL(Q, data);
-            // if (Q->arr.front == -1) {
-            //     Q->arr.front = Q->arr.rear = 0;
-            // } else {
-            //     Q->arr.rear = (Q->arr.rear + 1) % QUEUEMAX;
-            // }
-            // Q->arr.data[Q->arr.rear] = data;
-            
-            // llQUEUE *newNode = malloc(sizeof(llQUEUE));
-            // newNode->data = data;
-            // newNode->next = NULL;
-            
-            // if (Q->front == NULL) {
-            //     Q->front = Q->rear = newNode;
-            // } else {
-            //     Q->rear->next = newNode;
-            //     Q->rear = newNode;
-            // }
             
             printf("Queued.\n");
         } else {
@@ -144,23 +116,12 @@ void dequeueUnique(Queue *Q, Studtype data) {
         initQueue(&tempQueue);
         bool flag = false;
         
-        while (Q->arr.front != -1) {
+        while (Q->arr.front != -1 && !flag) {
             Studtype tempData = queueFrontArray(Q->arr);
             dequeueArr(Q);
-            // if (Q->arr.rear == Q->arr.front) {
-            //     Q->arr.front = Q->arr.rear = -1;
-            // } else {
-            //     Q->arr.front = (Q->arr.front + 1) % QUEUEMAX;
-            // }
             
             if (cmp(tempData, data)) {
                 flag = true;
-                // if (tempQueue.arr.front == -1) {
-                //     tempQueue.arr.front = tempQueue.arr.rear = 0;
-                // } else {
-                //     tempQueue.arr.rear = (tempQueue.arr.rear + 1) % QUEUEMAX;
-                // }
-                // tempQueue.arr.data[tempQueue.arr.rear] = tempData;
             }  else {
                 enqueueArr(&tempQueue, tempData);
             }
@@ -220,11 +181,6 @@ void displayQueue(Queue Q) {
                     data.Course);
             enqueueArr(&tempQueue, data);
             dequeueArr(&Q);
-            // if (t.arr.front == t.arr.rear) {
-            //     t.arr.front = t.arr.rear = -1;
-            // } else {
-            //     t.arr.front = (t.arr.front + 1) % QUEUEMAX;
-            // } // dequeueUnique(&t, t.arr.data[t.arr.front]);
         }
         
         while (tempQueue.arr.front != -1) {

@@ -3,7 +3,7 @@
 #include <stdbool.h>
 #include "Studtype.h"
 
-#define CBMAX 10
+#define CBMAX 50
 
 typedef struct {
 	Studtype data;
@@ -21,10 +21,10 @@ typedef struct {
     int top;
 } CBStack;
 
-// typedef struct {
-//     int front;
-//     int rear;
-// } CBQueue;
+typedef struct {
+    int front;
+    int rear;
+} CBQueue;
 
 void initVHeap(VHeap *VH);
 

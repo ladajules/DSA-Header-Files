@@ -1,5 +1,4 @@
 #include <stdbool.h>
-#include "Studtype.h"
 #include "CursorBased.h"
 
 void initVHeap(VHeap *VH) {

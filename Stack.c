@@ -3,6 +3,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include "Stack.h"
+#include "Studtype.h"
 
 void initStack (STACK *S) {
     S->arr.top = -1;
@@ -11,28 +12,10 @@ void initStack (STACK *S) {
 
 Studtype stackPeekArray(arrSTACK S) {
     return S.stud[S.top];
-    // printf("%-15s%-15s%-5c%-10d%-10s\n", 
-    //     S.arr.stud[S.arr.top].name.LName, 
-    //     S.arr.stud[S.arr.top].name.FName,
-    //     S.arr.stud[S.arr.top].name.Mi,
-    //     S.arr.stud[S.arr.top].YrLvl,
-    //     S.arr.stud[S.arr.top].Course);
 }
 
 Studtype stackPeekList(llSTACK *S) {
     return S->data;
-    // printf("%-15s%-15s%-5c%-10d%-10s\n", 
-    //     S.top->data.name.LName, 
-    //     S.top->data.name.FName,
-    //     S.top->data.name.Mi,
-    //     S.top->data.YrLvl,
-    //     S.top->data.Course);
-}
-
-bool cmp(Studtype a, Studtype b) {
-    return strcmp(a.name.LName, b.name.LName) == 0 &&
-        strcmp(a.name.FName, b.name.FName) == 0 &&
-        a.name.Mi == b.name.Mi;
 }
 
 void pushArr(STACK *S, Studtype data) { // new
@@ -125,14 +108,12 @@ void popUnique(STACK *S, Studtype data) {
         bool flag = false;
         
         while (S->arr.top != -1 && !flag) {
-            Studtype tempData =  stackPeekArray(S->arr); // top of stack 
+            Studtype tempData = stackPeekArray(S->arr); // top of stack 
             
             if (cmp(tempData, data)) {
                 flag = true;
             } else {
                 pushArr(&tempStack, tempData);
-                // tempStack.arr.top++; 
-                // tempStack.arr.stud[tempStack.arr.top] = tempData;
             }
             popArr(S); // S->arr.top--; 
         }
@@ -140,8 +121,6 @@ void popUnique(STACK *S, Studtype data) {
         while (tempStack.arr.top != -1) {
             Studtype giveBak = stackPeekArray(tempStack.arr);
             pushArr(S, giveBak);
-            // S->arr.top++;
-            // S->arr.stud[S->arr.top] = tempStack.arr.stud[tempStack.arr.top];
             popArr(&tempStack); // tempStack.arr.top--;
         }
         
@@ -179,15 +158,9 @@ void pushUnique(STACK *S, Studtype data) {
         if (stackIsUnique(temp, data)) {
             //array
             pushArr(S, data);
-            // S->arr.top++;
-            // S->arr.stud[S->arr.top] = data;
 
             //linked list
             pushLL(S, data);
-            // llSTACK *newNode = malloc(sizeof(llSTACK));
-            // newNode->data = data;
-            // newNode->next = S->top;
-            // S->top = newNode;
 
             printf("Pushed.\n");
         } else {

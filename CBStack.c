@@ -1,9 +1,8 @@
 #include <stdio.h>
-#include <stdlib.h>
 #include <stdbool.h>
-#include <string.h>
 #include "CursorBased.h"
 #include "CBStack.h"
+#include "Studtype.h"
 
 void CBinitStack(CBStack *S) {
     S->top = -1;    

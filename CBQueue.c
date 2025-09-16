@@ -1,9 +1,8 @@
 #include <stdio.h>
 #include <stdbool.h>
-#include <stdlib.h>
-#include <string.h>
 #include "CursorBased.h"
 #include "CBQueue.h"
+#include "Studtype.h"
 
 void CBinitQueue(CBQueue *Q) {
     Q->front = Q->rear = -1;    
