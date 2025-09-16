@@ -116,11 +116,11 @@ void dequeueUnique(Queue *Q, Studtype data) {
         initQueue(&tempQueue);
         bool flag = false;
         
-        while (Q->arr.front != -1 && !flag) {
+        while (Q->arr.front != -1) {
             Studtype tempData = queueFrontArray(Q->arr);
             dequeueArr(Q);
             
-            if (cmp(tempData, data)) {
+            if (cmp(tempData, data) && !flag) {
                 flag = true;
             }  else {
                 enqueueArr(&tempQueue, tempData);

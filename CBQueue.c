@@ -25,7 +25,7 @@ void CBenqueue(VHeap *VH, CBQueue *Q, Studtype data) {
             Q->rear = newNode;
         }
     } else {
-        printf("Queue is full.n\n");
+        printf("Queue is full.\n");
     }
 }
 
